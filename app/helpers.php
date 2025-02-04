@@ -10,14 +10,16 @@ if (!function_exists('env')) {
 }
 
 if (!function_exists('dd')) {
-    #[NoReturn] function dd(...$vars) {
+    #[NoReturn] function dd(...$vars): void
+    {
         VarDumper::dump(...$vars);
         die();
     }
 }
 
-if (!function_exists('dd')) {
-    function dump(...$vars) {
+if (!function_exists('dump')) {
+    function dump(...$vars): void
+    {
         VarDumper::dump(...$vars);
     }
 }
