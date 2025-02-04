@@ -2,6 +2,7 @@
 
 namespace App\Http;
 use App\Models\Order;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Monolog\Logger;
@@ -39,6 +40,7 @@ class OrderFetcher
                 $this->logger->info("Fetched orders", [
                     'page: ' => $response['pagination']['currentPage'],
                 ]);
+                dump('current page: ' . $page);
 
                 $page++;
                 sleep(1);
@@ -98,13 +100,12 @@ class OrderFetcher
                 'order_id' => $order['id'],
                 'customer_id' => $order['customer']['id'],
                 'order_number' => $order['number'],
-                'order_date' => $order['createdAt'] ,
-                'date_of_sale' => $order['customFields']['fakt_data'],
+                'order_date' => Carbon::make($order['customFields']['vremia_postupleniia_zakaza']),
+                'date_of_sale' => Carbon::make($order['customFields']['fakt_data']),
                 'sum' => $order['totalSumm'],
                 'prepay_sum' => $order['prepaySum'],
             ];
         }
-
         Order::query()->upsert($dataToSave, ['order_id'], ['sum', 'prepay_sum']);
     }
 }
